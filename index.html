@@ -1,11 +1,6 @@
 <!DOCTYPE html>
 <html lang="de" class="scroll-smooth">
-<head><link rel="icon" href="IMG_2770.png">
-<meta name="description" content="Maison Voyage – individuelle Reiseplanung, persönlich auf dich zugeschnitten.">
-<meta property="og:title" content="Maison Voyage – Individuelle Reiseplanung">
-<meta property="og:description" content="Deine Reise. Persönlich geplant.">
-<meta property="og:image" content="https://levipaul7-oss.github.io/M-Voyage/IMG_2769.jpeg">
-
+<head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Maison Voyage – Individuelle Reiseplanung</title>
@@ -388,6 +383,7 @@ function nativeSend(){
   add('name',`${v('firstname')} ${v('lastname')}`.trim());
   add('email',v('email').trim());
   add('whatsapp',v('whatsapp'));
+  add('einwilligung_datenschutz','zugestimmt');
   add('anfrage',body);
   document.body.appendChild(fm);fm.submit();fm.remove();
   err('');showSuccess();
@@ -417,6 +413,7 @@ async function submitRequest(){
         email:v('email').trim(),
         whatsapp:v('whatsapp'),
         kontakt_bevorzugt:v('contact_pref'),
+        einwilligung_datenschutz:'zugestimmt',
         anfrage:body
       })
     });
@@ -466,15 +463,15 @@ if(FEATURES.fade&&'IntersectionObserver' in window&&!matchMedia('(prefers-reduce
   }
   last=y;tick=false})},{passive:true})})();
 const M=t=>`<mark class="bg-yellow-100 text-brand-charcoal px-1 rounded">${t}</mark>`;
-const NOTE='<p class="p-3 rounded-xl bg-yellow-50 border border-yellow-200 text-xs text-brand-charcoal"><b>Vorlage:</b> Bitte die markierten Stellen ausfüllen und den Text vor dem Livegang rechtlich prüfen lassen.</p>';
+const NOTE='';
 const LEGAL={
- impressum:{t:'Impressum',h:NOTE+`<p><b>Angaben gemäß § 5 DDG</b></p><p>Maison Voyage<br>${M('[Vor- und Nachname / Firmenname]')}<br>${M('[Straße und Hausnummer]')}<br>${M('[PLZ und Ort]')}</p><p><b>Kontakt</b><br>E-Mail: ${M('[E-Mail-Adresse]')}<br>Telefon: ${M('[optional]')}</p><p><b>Umsatzsteuer-ID</b> (falls vorhanden)<br>${M('[USt-IdNr.]')}</p><p><b>Verantwortlich für den Inhalt</b><br>${M('[Name und Anschrift wie oben]')}</p>`},
- datenschutz:{t:'Datenschutzerklärung',h:NOTE+`<p><b>1. Verantwortlicher</b><br>${M('[Name, Anschrift und E-Mail-Adresse]')}</p>
+ impressum:{t:'Impressum',h:NOTE+`<p><b>Angaben gemäß § 5 DDG</b></p><p>Maison Voyage<br>Levi Paul Schonnop<br>Paul-Flechsig-Straße 6<br>04289 Leipzig</p><p><b>Kontakt</b><br>E-Mail: maisonvoyage.reiseplanung@gmail.com</p><p><b>Umsatzsteuer</b><br>Gemäß § 19 UStG wird keine Umsatzsteuer berechnet.</p><p><b>Verantwortlich für den Inhalt</b><br>Levi Paul Schonnop, Anschrift wie oben</p>`},
+ datenschutz:{t:'Datenschutzerklärung',h:NOTE+`<p><b>1. Verantwortlicher</b><br>Levi Paul Schonnop, Maison Voyage, Paul-Flechsig-Straße 6, 04289 Leipzig<br>E-Mail: maisonvoyage.reiseplanung@gmail.com</p>
 <p><b>2. Welche Daten ich verarbeite</b><br>Die Angaben im Reise-Assistenten: Reiseziel, Zeitraum, Zahl und Art der Mitreisenden, Reisewünsche, Unterkunfts- und Budgetangaben sowie Vor- und Nachname, E-Mail-Adresse, optional WhatsApp-Nummer und bevorzugter Kontaktweg.</p>
 <p><b>3. Zweck und Rechtsgrundlage</b><br>Ich nutze die Daten, um deine Anfrage zu bearbeiten, dir ein Angebot zu machen und dich zu kontaktieren. Rechtsgrundlage sind deine Einwilligung (Art. 6 Abs. 1 lit. a DSGVO) und vorvertragliche Maßnahmen (Art. 6 Abs. 1 lit. b DSGVO).</p>
-<p><b>4. Versand und Empfänger</b><br>Der Versand der Anfrage erfolgt über den Dienst Formspree (Formspree, Inc., USA). Deine Angaben werden dabei an Formspree übermittelt und an mich weitergeleitet. ${M('[Auftragsverarbeitungsvertrag / Drittlandübermittlung prüfen und ergänzen]')}</p>
-<p><b>5. Speicherdauer</b><br>${M('[z. B. bis 6 Monate nach Abschluss der Anfrage]')}</p>
-<p><b>6. Externe Inhalte</b><br>Beim Aufruf der Seite werden Schriftarten von Google Fonts und ein Skript von cdn.tailwindcss.com geladen. Dabei kann deine IP-Adresse an diese Anbieter übermittelt werden.</p>
+<p><b>4. Versand und Empfänger</b><br>Der Versand der Anfrage erfolgt über den Dienst Formspree (Formspree, Inc., USA). Deine Angaben werden dabei an Formspree übermittelt und per E-Mail an mich weitergeleitet. Mit Formspree besteht ein Auftragsverarbeitungsvertrag nach Art. 28 DSGVO. Die Übermittlung in die USA stützt sich auf das EU-US Data Privacy Framework bzw. Standardvertragsklauseln.</p>
+<p><b>5. Speicherdauer</b><br>Ich speichere deine Angaben, bis deine Anfrage abgeschlossen ist, längstens 6 Monate danach, sofern keine gesetzlichen Aufbewahrungspflichten entgegenstehen.</p>
+<p><b>6. Hosting und externe Inhalte</b><br>Die Website wird über GitHub Pages (GitHub Inc., USA) bereitgestellt; dabei werden technisch notwendige Daten wie die IP-Adresse verarbeitet. Beim Aufruf der Seite werden Schriftarten von Google Fonts und ein Skript von cdn.tailwindcss.com geladen. Dabei kann deine IP-Adresse an diese Anbieter übermittelt werden.</p>
 <p><b>7. Deine Rechte</b><br>Du hast das Recht auf Auskunft, Berichtigung, Löschung, Einschränkung der Verarbeitung, Datenübertragbarkeit und Widerruf deiner Einwilligung mit Wirkung für die Zukunft. Außerdem kannst du dich bei einer Datenschutz-Aufsichtsbehörde beschweren.</p>`}};
 function openLegal(k){$('#legalTitle').textContent=LEGAL[k].t;$('#legalBody').innerHTML=LEGAL[k].h;$('#legal').classList.remove('hidden');document.body.style.overflow='hidden';$('#legalBody').scrollTop=0}
 function closeLegal(){$('#legal').classList.add('hidden');if($('#modal').classList.contains('hidden'))document.body.style.overflow=''}
