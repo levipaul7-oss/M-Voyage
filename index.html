@@ -32,6 +32,10 @@
 tailwind.config={theme:{extend:{colors:{brand:{green:'#30483B',lightGreen:'#415D4D',cream:'#F7F4EE',sand:'#D8C8AE',terra:'#C8663F',terraDark:'#B2552F',darkSand:'#BFA882',charcoal:'#1A2421',muted:'#687771'}},fontFamily:{serif:['"DM Serif Display"','Georgia','serif'],sans:['Manrope','system-ui','sans-serif']}}}}
 </script>
 <style>
+input[type=date]{display:block;width:100%;min-width:0;height:3.25rem;padding:0 1rem;font-size:.875rem;line-height:3.25rem;text-align:left;color:#1A2421;background-color:#fff;-webkit-appearance:none;appearance:none}
+input[type=date]::-webkit-date-and-time-value{text-align:left;margin:0;min-height:0}
+input[type=date]::-webkit-calendar-picker-indicator{opacity:.55;cursor:pointer}
+@media(hover:none){input[type=date]:not(.has)::before{content:"Datum wählen";color:#9AA5A0}}
 :root{color-scheme:light}
 body{font-family:'Manrope',system-ui,sans-serif;background:#F7F4EE;color:#1A2421}
 .font-serif{font-family:'DM Serif Display',Georgia,serif}
@@ -343,11 +347,11 @@ const CONSENT=`<label class="flex items-start gap-3 mt-5 text-xs text-brand-mute
 const STEPS=[
  {t:'Wohin möchtest du reisen?',h:P('Hast du schon ein Ziel im Kopf oder bist du offen für Vorschläge?')+
    group('radio','dest_mode',['Ich habe ein Reiseziel','Ich bin offen für Vorschläge'],'sm:grid-cols-2',true)+
-   `<div id="destBox" class="mt-4"><div><label class="${LB}">Dein Reiseziel</label><div class="relative"><input type="text" name="destination" placeholder="z. B. Italien, Bali oder New York" class="${IN}" style="padding-right:3.5rem"><span id="destIcon" class="hidden absolute pointer-events-none text-brand-green" style="right:.9rem;top:50%;margin-top:-16px;width:32px;height:32px" role="img"></span></div></div>`,
+   `<div id="destBox" class="mt-4"><div><label class="${LB}">Dein Reiseziel</label><div class="relative"><input type="text" name="destination" placeholder="z. B. Italien, Bali oder New York" class="${IN}" style="padding-right:3.5rem"><span id="destIcon" class="hidden absolute pointer-events-none text-brand-green" style="right:.9rem;top:50%;margin-top:-16px;width:32px;height:32px" role="img"></span></div></div></div>`,
   ok:()=>{if(v('dest_mode').startsWith('Ich habe')&&!v('destination').trim())return'Bitte gib ein Reiseziel ein oder wähle „Ich bin offen für Vorschläge“.'}},
  {t:'Wann möchtest du reisen?',h:P('Wähle deinen Reisezeitraum.')+
    `<div class="grid sm:grid-cols-2 gap-4 mb-5">${field('Hinreise','date_from','date','',1)}${field('Rückreise','date_to','date','',1)}</div>`+
-   P('Wie flexibel bist du bei den Daten?')+group('radio','flexibility',['Sehr flexibel','Etwas flexibel','Nicht flexibel'],'sm:grid-cols-3',true),
+   P('Wie flexibel bist du bei den Daten?')+group('radio','flexibility',['Nicht flexibel','Etwas flexibel','Sehr flexibel'],'sm:grid-cols-3',true),
   ok:()=>{const a=v('date_from'),b=v('date_to');if(!a||!b)return'Bitte wähle Hin- und Rückreisedatum.';if(b<a)return'Die Rückreise darf nicht vor der Hinreise liegen.'}},
  {t:'Mit wem reist du?',h:group('radio','traveler_type',['Allein','Paar','Freunde','Familie','Sonstiges'],'grid-cols-2 sm:grid-cols-3',true)+
    `<div id="countBox" class="hidden mt-6">${P('Wie viele Personen reisen insgesamt?')}${group('radio','traveler_count',['2 Personen','3–4 Personen','5–6 Personen','Mehr als 6'],'grid-cols-2 sm:grid-cols-4',true)}</div>`+
@@ -379,9 +383,10 @@ $('#steps').innerHTML=STEPS.map((s,i)=>`<div class="step ${i?'hidden':''}" data-
 f.addEventListener('change',e=>{
   if(e.target.name==='dest_mode')$('#destBox').classList.toggle('hidden',!v('dest_mode').startsWith('Ich habe'));
   if(e.target.name==='traveler_type'){const alone=v('traveler_type')==='Allein';$('#budgetModeBox').classList.toggle('hidden',alone);$('#budgetHint').textContent=alone?'Dein Budget für die Reise':'Und wie hoch ist der Rahmen?';$('#countBox').classList.toggle('hidden',alone);$('#kidsBox').classList.toggle('hidden',v('traveler_type')!=='Familie');}
-  if(e.target.name==='date_from'){const t=f.elements.date_to;t.min=v('date_from');}
 });
-f.elements.date_from.min=new Date().toISOString().slice(0,10);
+const syncDates=()=>f.querySelectorAll('input[type=date]').forEach(i=>i.classList.toggle('has',!!i.value));
+['input','change'].forEach(t=>f.addEventListener(t,syncDates));f.addEventListener('reset',()=>setTimeout(syncDates));
+{const d=new Date();f.elements.date_from.min=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
 
 
 // ===== Reiseziel-Symbol (Länder, Städte, Wahrzeichen) =====
