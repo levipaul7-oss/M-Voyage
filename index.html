@@ -557,8 +557,8 @@ function renderSummary(){
   $('#summary').innerHTML=`<p class="text-xs text-brand-muted">Prüfe deine Angaben, bevor du sie an Maison Voyage sendest.</p>`+
    rows.map(([l,val,i])=>`<div class="bg-white p-4 rounded-xl border border-brand-sand/30 flex justify-between gap-3"><div class="min-w-0 break-words"><strong>${l}:</strong><br>${esc(val)}</div><button type="button" onclick="jump(${i})" class="text-xs text-brand-green underline font-semibold shrink-0">Bearbeiten</button></div>`).join('');
 }
-// ===== VERSAND über Formspree =====
-const FORM_ENDPOINT='https://formspree.io/f/mjygbyba';
+// ===== VERSAND über den Formular-Dienst (FORM_ENDPOINT: Adresse aus dem Dashboard einfügen) =====
+const FORM_ENDPOINT='https://forms.formward.eu/f/bc36bbb0-fa30-4af1-9234-a30bdf1f153c';
 
 function showSuccess(){
   done=true;
@@ -566,7 +566,7 @@ function showSuccess(){
   $('#thanks').textContent='Danke!';
   $('#success').classList.remove('hidden');
 }
-// Alternativer Versand: klassisches Formular (Basic-HTML-Variante), öffnet Formspree in neuem Tab
+// Alternativer Versand: klassisches Formular (Basic-HTML-Variante), öffnet den Formular-Dienst in neuem Tab
 function nativeSend(){
   const body=[...$('#summary').querySelectorAll('div.min-w-0')].map(d=>d.innerText.replace('\n',' ')).join('\n');
   const fm=document.createElement('form');
@@ -599,9 +599,11 @@ async function submitRequest(){
   try{
     const res=await fetch(FORM_ENDPOINT,{
       method:'POST',
-      headers:{'Content-Type':'application/json','Accept':'application/json'},
-      body:JSON.stringify({
+      headers:{'Accept':'application/json'},
+      body:new URLSearchParams({
         _subject:'Neue Reiseanfrage – Maison Voyage',
+        _replyto:v('email').trim(),
+        _gotcha:'',
         name:`${v('firstname')} ${v('lastname')}`.trim(),
         email:v('email').trim(),
         whatsapp:v('whatsapp'),
@@ -619,7 +621,7 @@ async function submitRequest(){
     console.error(e);
     const net=!/^HTTP/.test(e.message||'');
     err(net
-      ? 'Die Verbindung zu Formspree ist hier nicht möglich (Vorschau oder blockiertes Netzwerk). Auf deiner eigenen Domain funktioniert der Versand direkt. Übergangsweise kannst du unten den Alternativ-Versand nutzen.'
+      ? 'Die Verbindung zum Formular-Dienst ist hier nicht möglich (Vorschau oder blockiertes Netzwerk). Auf deiner eigenen Domain funktioniert der Versand direkt. Übergangsweise kannst du unten den Alternativ-Versand nutzen.'
       : 'Senden hat nicht geklappt ('+e.message+'). Bitte versuche es gleich noch einmal.');
     if(net)$('#fallbackWrap').classList.remove('hidden');
   }finally{
@@ -691,7 +693,7 @@ const LEGAL={
  datenschutz:{t:'Datenschutzerklärung',h:NOTE+`<p><b>1. Verantwortlicher</b><br>Levi Paul Schonnop, Maison Voyage, Paul-Flechsig-Straße 6, 04289 Leipzig<br>E-Mail: maisonvoyage.reiseplanung@gmail.com</p>
 <p><b>2. Welche Daten ich verarbeite</b><br>Die Angaben im Reise-Assistenten: Reiseziel, Zeitraum, Zahl und Art der Mitreisenden, Reisewünsche, Unterkunfts- und Budgetangaben sowie Vor- und Nachname, E-Mail-Adresse, optional WhatsApp-Nummer und bevorzugter Kontaktweg.</p>
 <p><b>3. Zweck und Rechtsgrundlage</b><br>Ich nutze die Daten, um deine Anfrage zu bearbeiten, dir ein Angebot zu machen und dich zu kontaktieren. Rechtsgrundlage sind deine Einwilligung (Art. 6 Abs. 1 lit. a DSGVO) und vorvertragliche Maßnahmen (Art. 6 Abs. 1 lit. b DSGVO).</p>
-<p><b>4. Versand und Empfänger</b><br>Der Versand der Anfrage erfolgt über den Dienst Formspree (Formspree, Inc., USA). Deine Angaben werden dabei an Formspree übermittelt und per E-Mail an mich weitergeleitet. Mit Formspree besteht ein Auftragsverarbeitungsvertrag nach Art. 28 DSGVO. Die Übermittlung in die USA stützt sich auf das EU-US Data Privacy Framework bzw. Standardvertragsklauseln.</p>
+${FORM_ENDPOINT.includes("formward")?`<p><b>4. Versand und Empfänger</b><br>Der Versand der Anfrage erfolgt über den Dienst Formward (Stockholm, Schweden). Deine Angaben werden dabei an Formward übermittelt, auf Servern in der EU (Schweden) verarbeitet und per E-Mail an mich weitergeleitet. Mit Formward besteht ein Auftragsverarbeitungsvertrag nach Art. 28 DSGVO.</p>`:`<p><b>4. Versand und Empfänger</b><br>Der Versand der Anfrage erfolgt über den Dienst Formspree (Formspree, Inc., USA). Deine Angaben werden dabei an Formspree übermittelt und per E-Mail an mich weitergeleitet. Mit Formspree besteht ein Auftragsverarbeitungsvertrag nach Art. 28 DSGVO. Die Übermittlung in die USA stützt sich auf das EU-US Data Privacy Framework bzw. Standardvertragsklauseln.</p>`}
 <p><b>5. Speicherdauer</b><br>Ich speichere deine Angaben, bis deine Anfrage abgeschlossen ist, längstens 6 Monate danach, sofern keine gesetzlichen Aufbewahrungspflichten entgegenstehen.</p>
 <p><b>6. Hosting und externe Inhalte</b><br>Die Website wird über GitHub Pages (GitHub Inc., USA) bereitgestellt; dabei werden technisch notwendige Daten wie die IP-Adresse verarbeitet. Beim Aufruf der Seite werden Schriftarten von Google Fonts und ein Skript von cdn.tailwindcss.com geladen. Dabei kann deine IP-Adresse an diese Anbieter übermittelt werden.</p>
 <p><b>7. Deine Rechte</b><br>Du hast das Recht auf Auskunft, Berichtigung, Löschung, Einschränkung der Verarbeitung, Datenübertragbarkeit und Widerruf deiner Einwilligung mit Wirkung für die Zukunft. Außerdem kannst du dich bei einer Datenschutz-Aufsichtsbehörde beschweren.</p>`}};
