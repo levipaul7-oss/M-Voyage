@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://maisonvoyage-reiseplanung.de/sitemap.xml
